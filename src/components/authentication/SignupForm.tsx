@@ -14,9 +14,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useId, useState } from "react";
+import { Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
+import { signup } from "@/app/actions/auth";
+import { redirect } from "next/navigation";
 
 const passwordValidationRegex = new RegExp(
-  "^(?=.*[A-Z])(?=.*[a-z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$"
+  "^(?=.*[A-Z])(?=.*[a-z])(?=.*d)[A-Za-zd]{6,}$"
 );
 
 const formSchema = z
@@ -33,11 +38,11 @@ const formSchema = z
       })
       .min(8, {
         message: "Password must be at least 8 characters long",
-      })
-      .regex(passwordValidationRegex, {
-        message:
-          "Password must contain 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character",
       }),
+    // .regex(passwordValidationRegex, {
+    //   message:
+    //     "Password must contain 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character",
+    // }),
     confirmPassword: z.string({
       required_error: "Confirm password is required",
     }),
@@ -48,6 +53,9 @@ const formSchema = z
   });
 
 export function SignupForm({ className }: { className?: string }) {
+  const [loading, setLoading] = useState(false);
+  const toastId = useId();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +66,28 @@ export function SignupForm({ className }: { className?: string }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    toast.loading("Signing up", { id: toastId });
+    setLoading(true);
+    console.log("SignUp", values);
+    const formData = new FormData();
+    formData.append("full_name", values.full_name);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+
+    const { success, error } = await signup(formData);
+    if (!success) {
+      toast.error(String(error), { id: toastId });
+    } else {
+      toast.success(
+        "Signed up successfully! Please confirm your email adress",
+        { id: toastId }
+      );
+      redirect("/login");
+    }
+    setLoading(false);
+  }
+
   return (
     <div className={cn("grid gap-6", className)}>
       <Form {...form}>
@@ -108,7 +137,7 @@ export function SignupForm({ className }: { className?: string }) {
           />
           <FormField
             control={form.control}
-            name="confirm_password"
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
@@ -123,7 +152,8 @@ export function SignupForm({ className }: { className?: string }) {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
             Sign Up
           </Button>
         </form>
