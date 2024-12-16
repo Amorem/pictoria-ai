@@ -33,8 +33,6 @@ export function GeneratedImages() {
   const images = useGeneratedStore((state) => state.images);
   const loading = useGeneratedStore((state) => state.loading);
 
-  console.log("@@GeneratedImages", images, loading);
-
   if (images.length === 0) {
     return (
       <Card className="w-full max-w-2xl bg-muted">

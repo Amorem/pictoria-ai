@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { z } from "zod";
 import { ImageGenerationFormSchema } from "@/app/(dashboard)/image-generation/_components/Configurations";
-import { generateImageAction } from "@/app/actions/image-actions";
+import { generateImageAction, storeImages } from "@/app/actions/image-actions";
 
 interface GenerateState {
   loading: boolean;
@@ -32,10 +32,13 @@ export const useGeneratedStore = create<GenerateState>((set) => ({
       const dataWithUrl = data.map((url: string) => {
         return {
           url: url,
+          ...values,
         };
       });
 
       set({ images: dataWithUrl, loading: false });
+
+      await storeImages(dataWithUrl);
     } catch (error) {
       set({
         error: "failed to generate image. Please try again",
