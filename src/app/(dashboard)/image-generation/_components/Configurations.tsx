@@ -28,8 +28,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LucideInfo } from "lucide-react";
+import { useEffect } from "react";
+import useGeneratedStore from "@/store/useGeneratedSore";
 
-const formSchema = z.object({
+export const ImageGenerationFormSchema = z.object({
   model: z.string({
     required_error: "Model is required",
   }),
@@ -69,8 +71,9 @@ const formSchema = z.object({
 });
 
 export function Configurations() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const generateImage = useGeneratedStore((state) => state.generateImage);
+  const form = useForm<z.infer<typeof ImageGenerationFormSchema>>({
+    resolver: zodResolver(ImageGenerationFormSchema),
     defaultValues: {
       model: "black-forest-labs/flux-dev",
       prompt: "",
@@ -83,8 +86,26 @@ export function Configurations() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "model") {
+        let newSteps;
+        if (value.model === "black-forest-labs/flux-schnell") {
+          newSteps = 4;
+        } else {
+          newSteps = 28;
+        }
+        if (newSteps !== undefined) {
+          form.setValue("num_inference_steps", newSteps);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  async function onSubmit(values: z.infer<typeof ImageGenerationFormSchema>) {
+    await generateImage(values);
   }
   return (
     <TooltipProvider>
@@ -269,7 +290,12 @@ export function Configurations() {
                     <Slider
                       defaultValue={[field.value]}
                       min={1}
-                      max={50}
+                      max={
+                        form.getValues("model") ===
+                        "black-forest-labs/flux-schnell"
+                          ? 4
+                          : 50
+                      }
                       step={1}
                       onValueChange={(value) => field.onChange(value[0])}
                     />
