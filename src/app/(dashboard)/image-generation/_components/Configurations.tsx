@@ -249,7 +249,20 @@ export function Configurations() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    <div>Inference</div>
+                    <div className="flex items-center gap-2">
+                      Inference
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideInfo className="w-4 h-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Number of denoising steps. Recommanded range is
+                            28-50 for dev modem and 1-4 for schnell model
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <span>{field.value}</span>
                   </FormLabel>
                   <FormControl>
@@ -273,7 +286,20 @@ export function Configurations() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    <div>Quality</div>
+                    <div className="flex items-center gap-2">
+                      Quality
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideInfo className="w-4 h-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Quality when saving the output image, form 0
+                            (lowest) to 100 (best)
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <span>{field.value}</span>
                   </FormLabel>
                   <FormControl>
@@ -296,7 +322,20 @@ export function Configurations() {
               name="output_format"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Output Format</FormLabel>
+                  <FormLabel>
+                    <div className="flex items-center gap-2">
+                      Output Format
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideInfo className="w-4 h-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Output format</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </FormLabel>
+
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -321,7 +360,19 @@ export function Configurations() {
               name="prompt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prompt</FormLabel>
+                  <FormLabel>
+                    <div className="flex items-center gap-2">
+                      Prompt
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideInfo className="w-4 h-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Prompt for generated images</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </FormLabel>
                   <FormControl>
                     <Textarea {...field} rows={6} />
                   </FormControl>
