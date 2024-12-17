@@ -1,4 +1,4 @@
-import { deleteImage } from "@/app/actions/image-actions";
+import { deleteImage } from "@/app/actions/image";
 import {
   AlertDialog,
   AlertDialogAction,

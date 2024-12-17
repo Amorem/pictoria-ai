@@ -1,4 +1,4 @@
-import { getImages } from "@/app/actions/image-actions";
+import { getImages } from "@/app/actions/image";
 import { ImageGallery } from "./_components/ImageGallery";
 
 export default async function GalleryPage() {

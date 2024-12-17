@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { z } from "zod";
 import { ImageGenerationFormSchema } from "@/app/(dashboard)/image-generation/_components/Configurations";
-import { generateImageAction, storeImages } from "@/app/actions/image-actions";
+import { generateImageAction, storeImages } from "@/app/actions/image";
 import { toast } from "sonner";
 
 interface GenerateState {
