@@ -181,3 +181,32 @@ export async function getImages(limit?: number) {
     data: imageWithUrls || null,
   };
 }
+
+export async function deleteImage(imageId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "unauthorized", success: false, data: null };
+  }
+
+  const { data, error } = await supabase
+    .from("generated_images")
+    .delete()
+    .eq("id", imageId);
+
+  if (error) {
+    return {
+      error: error,
+      success: false,
+      data: null,
+    };
+  }
+
+  return {
+    error: null,
+    success: true,
+    data: data,
+  };
+}

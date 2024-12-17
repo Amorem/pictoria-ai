@@ -1,5 +1,8 @@
+"use client";
 import { Tables } from "@/lib/supabase/database.types";
 import Image from "next/image";
+import { ImageDialog } from "./ImageDialog";
+import { useState } from "react";
 
 type ImageProps = {
   url: string | undefined;
@@ -10,6 +13,8 @@ interface GalleryProps {
 }
 
 export function ImageGallery({ images }: GalleryProps) {
+  const [selectedImage, setSelectedImage] = useState<ImageProps | null>(null);
+
   if (images.length === 0) {
     return (
       <div className="flex items-center justify-center h-[50vh] text-muted-foreground">
@@ -23,7 +28,10 @@ export function ImageGallery({ images }: GalleryProps) {
       <div className="columns-4 gap-4 space-y-4">
         {images.map((image) => (
           <div key={image.id}>
-            <div className="relative overflow-hidden cursor-pointer transition-transform group">
+            <div
+              className="relative overflow-hidden cursor-pointer transition-transform group"
+              onClick={() => setSelectedImage(image)}
+            >
               <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-70 rounded">
                 <div className="flex items-center justify-center h-full">
                   <p className="text-primary-foreground text-lg font-semibold">
@@ -42,6 +50,14 @@ export function ImageGallery({ images }: GalleryProps) {
           </div>
         ))}
       </div>
+      {selectedImage && (
+        <ImageDialog
+          image={selectedImage}
+          onClose={() => {
+            setSelectedImage(null);
+          }}
+        />
+      )}
     </section>
   );
 }
