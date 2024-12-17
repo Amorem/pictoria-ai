@@ -1,7 +1,7 @@
 "use client";
 import { Tables } from "@/lib/supabase/database.types";
 import Image from "next/image";
-import { ImageDialog } from "./ImageDialog";
+import { ImageDetails } from "./ImageDetails";
 import { useState } from "react";
 
 type ImageProps = {
@@ -51,7 +51,7 @@ export function ImageGallery({ images }: GalleryProps) {
         ))}
       </div>
       {selectedImage && (
-        <ImageDialog
+        <ImageDetails
           image={selectedImage}
           onClose={() => {
             setSelectedImage(null);

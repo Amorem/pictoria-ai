@@ -75,14 +75,14 @@ export function Configurations() {
   const form = useForm<z.infer<typeof ImageGenerationFormSchema>>({
     resolver: zodResolver(ImageGenerationFormSchema),
     defaultValues: {
-      model: "black-forest-labs/flux-dev",
+      model: "black-forest-labs/flux-schnell",
       prompt: "",
       guidance: 3.5,
       num_outputs: 1,
       output_format: "jpg",
       aspect_ratio: "1:1",
       output_quality: 80,
-      num_inference_steps: 28,
+      num_inference_steps: 4,
     },
   });
 

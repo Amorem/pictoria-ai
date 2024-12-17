@@ -7,16 +7,17 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { LucideDownload, LucideTrash2 } from "lucide-react";
+import { LucideDownload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { DeleteImage } from "./ImageDelete";
 
 interface ImageDialogProps {
   image: { url: string | undefined } & Tables<"generated_images">;
   onClose: () => void;
 }
 
-export function ImageDialog({ image, onClose }: ImageDialogProps) {
+export function ImageDetails({ image, onClose }: ImageDialogProps) {
   function handleDownload() {
     if (image.url) {
       fetch(image.url)
@@ -60,9 +61,11 @@ export function ImageDialog({ image, onClose }: ImageDialogProps) {
                     <LucideDownload className="w-4 h-4 mr-2" />
                     Download
                   </Button>
-                  <Button className="w-fit" variant={"destructive"}>
-                    <LucideTrash2 className="w-4 h-4" />
-                  </Button>
+                  <DeleteImage
+                    imageId={image.id.toString()}
+                    imageName={image.image_name?.toString() || ""}
+                    onDelete={onClose}
+                  />
                 </div>
               </div>
               <hr className="inline-block w-full border-primary/30 mb-2" />
