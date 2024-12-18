@@ -63,7 +63,55 @@ export function TrainingForm() {
 
     try {
       const data = await getPresignedStorageUrl(values.zipFile[0].name);
-    } catch {}
+      console.log("@@TRAINING_FORM", data);
+      if (data.error) {
+        toast.error(data.error || "Failed to upload te file", { id: toastId });
+        return;
+      }
+
+      // Uploading file
+      const urlResponse = await fetch(data.signedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": values.zipFile[0].type,
+        },
+        body: values.zipFile[0],
+      });
+
+      if (!urlResponse.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const res = await urlResponse.json();
+      console.log("response", res);
+      toast.success("File successfully uploaded", { id: toastId });
+
+      const formData = new FormData();
+      formData.append("fileKey", res.Key);
+      formData.append("modelName", values.modelName);
+      formData.append("gender", values.gender);
+
+      // use the train handler
+      const response = await fetch("/api/train", {
+        method: "POST",
+        body: formData,
+      });
+
+      const results = await response.json();
+
+      if (!response.ok || results?.error) {
+        throw new Error(results?.error || "Failed to train the model");
+      }
+
+      toast.success(
+        "Training started successfully! You will received a notification once is get completed",
+        { id: toastId }
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to start training";
+      toast.error(errorMessage, { id: toastId, duration: 5000 });
+    }
     console.log(values);
   }
 
@@ -122,7 +170,7 @@ export function TrainingForm() {
           <FormField
             control={form.control}
             name="zipFile"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>
                   Training Data (ZIP file){" "}
