@@ -36,3 +36,17 @@ export async function fetchModels() {
     count: count || 0,
   };
 }
+
+export async function deleteModel(
+  id: number,
+  model_id: string,
+  model_version: string
+) {
+  const supabase = await createClient();
+  if (model_version)
+    try {
+      fetch(
+        `https://api.replicate.com/v1/models/amorem/${model_id}/versions/${model_version}`
+      );
+    } catch (error) {}
+}
