@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,6 +31,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { useId } from "react";
+import { deleteModel } from "@/app/actions/model";
 
 type ModelType = {
   error: string | null;
@@ -41,7 +46,23 @@ interface ModelsListProps {
 }
 
 export function ModelsList({ models }: ModelsListProps) {
-  const { data, success, error } = models;
+  const { data } = models;
+  const toastId = useId();
+
+  async function handleDeleteModel(
+    id: number,
+    model_id: string,
+    model_version: string
+  ) {
+    toast.loading("Deleting model...", { id: toastId });
+    const { success, error } = await deleteModel(id, model_id, model_version);
+    if (success) {
+      toast.success("Model deleted successfully", { id: toastId });
+    }
+    if (error) {
+      toast.error(error, { id: toastId });
+    }
+  }
 
   if (data?.length === 0) {
     return (
@@ -116,7 +137,18 @@ export function ModelsList({ models }: ModelsListProps) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Delete</AlertDialogAction>
+                      <AlertDialogAction
+                        onClick={() =>
+                          handleDeleteModel(
+                            model.id,
+                            model.model_id || "",
+                            model.version || ""
+                          )
+                        }
+                        className="bg-destructive hover:bg-destructive/90"
+                      >
+                        Delete
+                      </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
