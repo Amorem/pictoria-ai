@@ -84,7 +84,7 @@ export function TrainingForm() {
 
       const res = await urlResponse.json();
       console.log("response", res);
-      toast.success("File successfully uploaded", { id: toastId });
+      toast.loading("Initiating model training", { id: toastId });
 
       const formData = new FormData();
       formData.append("fileKey", res.Key);

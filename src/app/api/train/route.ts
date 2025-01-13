@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         webhook: `${WEBHOOK_URL}/api/webhooks/training?userId=${
           user.id
         }&modelName=${encodeURIComponent(
-          modelId
+          input.modelName
         )}&filename=${encodeURIComponent(fileName)}`,
         webhook_events_filter: ["completed"],
       }

@@ -83,9 +83,7 @@ export async function POST(req: Request) {
         .eq("model_name", modelName);
 
       // delete the storage data from supabase storage
-      supabaseAdmin.storage
-        .from("training_data")
-        .remove([`${userId}/${fileName}`]);
+      await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
     } else {
       // handle the failed or canceled status
       await resend.emails.send({
@@ -108,9 +106,7 @@ export async function POST(req: Request) {
         .eq("model_name", modelName);
 
       // delete the storage data from supabase storage
-      supabaseAdmin.storage
-        .from("training_data")
-        .remove([`${userId}/${fileName}`]);
+      await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
     }
 
     return new NextResponse("OK", { status: 200 });
